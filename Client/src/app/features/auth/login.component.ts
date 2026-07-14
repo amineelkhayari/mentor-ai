@@ -40,7 +40,6 @@ import { AuthService } from '../../core/auth/auth.service';
           <input
             id="password"
             type="password"
-            value="Pa$$w0rd"
             formControlName="password"
             placeholder="••••••••"
             [class.invalid]="isInvalid('password')"
@@ -65,7 +64,7 @@ export class LoginComponent {
 
   form = this.fb.group({
     userName: ['', [Validators.required]],
-    password: ['', [Validators.required]],
+    password: ['Pa$$w0rd', [Validators.required]],
   });
 
   constructor(private auth: AuthService, private router: Router) {}
