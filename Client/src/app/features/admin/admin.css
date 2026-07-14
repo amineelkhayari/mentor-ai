@@ -1,0 +1,124 @@
+:host { display: block; font-family: 'Inter', sans-serif; color: #e9edf1; }
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid #262a35;
+  margin-bottom: 20px;
+}
+.admin-tabs a {
+  padding: 10px 16px;
+  color: #8d90a6;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  border-bottom: 2px solid transparent;
+}
+.admin-tabs a.active {
+  color: #e9edf1;
+  border-bottom-color: #6e5bff;
+}
+
+.panel-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.panel-sub {
+  color: #8d90a6;
+  font-size: 13.5px;
+  margin: 0 0 20px;
+}
+
+.create-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: flex-end;
+  background: #171a22;
+  border: 1px solid #262a35;
+  border-radius: 10px;
+  padding: 16px;
+  margin-bottom: 22px;
+}
+.create-form .field { display: flex; flex-direction: column; gap: 5px; }
+.create-form label {
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8d90a6;
+}
+.create-form input,
+.create-form select,
+.create-form textarea {
+  background: #0f1115;
+  border: 1px solid #2c303c;
+  border-radius: 7px;
+  padding: 8px 10px;
+  color: #e9edf1;
+  font-size: 13.5px;
+  min-width: 160px;
+}
+.create-form textarea { min-width: 260px; font-family: inherit; }
+
+.btn {
+  background: #6e5bff;
+  border: none;
+  color: #fff;
+  padding: 9px 16px;
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 13.5px;
+  cursor: pointer;
+}
+.btn:hover { background: #4d3fce; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn.danger { background: #d3453c; }
+.btn.danger:hover { background: #b4372f; }
+.btn.ghost { background: transparent; border: 1px solid #2c303c; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+th, td {
+  text-align: left;
+  padding: 10px 12px;
+  border-bottom: 1px solid #21242e;
+}
+th {
+  color: #8d90a6;
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+tr:hover td { background: #171a22; }
+
+.tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+.tag.admin { background: rgba(110,91,255,0.15); color: #a79bff; }
+.tag.manager { background: rgba(38,198,176,0.15); color: #5fe0cc; }
+.tag.user { background: rgba(141,144,166,0.15); color: #c4c6d6; }
+
+.empty-state {
+  color: #8d90a6;
+  font-size: 13.5px;
+  padding: 20px 0;
+}
+
+.banner-error {
+  background: #2a1616;
+  border: 1px solid #5a2b26;
+  color: #f28b83;
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}

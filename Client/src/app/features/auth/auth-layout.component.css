@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+:host {
+  --ink: #14151a;
+  --ink-soft: #1c1e27;
+  --mist: #f1f2f6;
+  --mist-line: #dfe1ea;
+  --violet: #6e5bff;
+  --violet-dim: #4d3fce;
+  --teal: #26c6b0;
+  --teal-dim: #1c9d8b;
+  --text-on-dark: #ecedf3;
+  --text-on-dark-muted: #8d90a6;
+  --text-on-light: #1b1d26;
+  --text-on-light-muted: #6b6e80;
+}
+
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  font-family: 'Inter', sans-serif;
+}
+
+/* ---------- dark signature side ---------- */
+.auth-side {
+  background: radial-gradient(120% 160% at 20% 0%, var(--ink-soft), var(--ink) 60%);
+  color: var(--text-on-dark);
+  padding: 48px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  --accent: var(--violet);
+  --accent-dim: var(--violet-dim);
+}
+.auth-side.side-teal {
+  --accent: var(--teal);
+  --accent-dim: var(--teal-dim);
+}
+
+.mark {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 18px;
+  letter-spacing: 0.01em;
+}
+.mark-accent {
+  color: var(--accent);
+}
+
+.side-mid {
+  max-width: 380px;
+}
+
+.waveform {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 56px;
+  margin-bottom: 20px;
+}
+.waveform span {
+  display: inline-block;
+  width: 4px;
+  border-radius: 2px;
+  background: var(--accent);
+  height: 14px;
+  animation: pulse 1.1s ease-in-out infinite;
+  opacity: 0.85;
+}
+@keyframes pulse {
+  0%, 100% { height: 10px; opacity: 0.5; }
+  50% { height: 48px; opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .waveform span { animation: none; height: 26px; }
+}
+
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+
+.side-mid h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 600;
+  margin: 0 0 12px;
+}
+
+.side-mid .sub {
+  color: var(--text-on-dark-muted);
+  font-size: 15px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.side-bottom .quote {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-style: italic;
+  color: var(--text-on-dark-muted);
+  border-left: 2px solid var(--accent-dim);
+  padding-left: 14px;
+  margin: 0;
+  max-width: 340px;
+}
+
+/* ---------- light form side ---------- */
+.auth-form-panel {
+  background: var(--mist);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 32px;
+}
+
+.auth-form-wrap {
+  width: 100%;
+  max-width: 380px;
+}
+
+@media (max-width: 860px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .auth-side { display: none; }
+}

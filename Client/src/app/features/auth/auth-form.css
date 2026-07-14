@@ -1,0 +1,122 @@
+:host {
+  --violet: #6e5bff;
+  --violet-dim: #4d3fce;
+  --teal: #26c6b0;
+  --text-on-light: #1b1d26;
+  --text-on-light-muted: #6b6e80;
+  --mist-line: #dfe1ea;
+  --error: #d3453c;
+  display: block;
+  font-family: 'Inter', sans-serif;
+}
+
+.form-heading {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: var(--text-on-light);
+  margin: 0 0 6px;
+}
+
+.form-sub {
+  color: var(--text-on-light-muted);
+  font-size: 14px;
+  margin: 0 0 28px;
+}
+
+.field {
+  margin-bottom: 18px;
+}
+
+.field label {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-on-light-muted);
+  margin-bottom: 6px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #fff;
+  border: 1px solid var(--mist-line);
+  border-radius: 8px;
+  padding: 11px 13px;
+  font-size: 14px;
+  color: var(--text-on-light);
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input::placeholder {
+  color: #a7abbd;
+}
+
+input:focus {
+  outline: none;
+  border-color: var(--violet);
+  box-shadow: 0 0 0 3px rgba(110, 91, 255, 0.15);
+}
+
+input.invalid {
+  border-color: var(--error);
+}
+
+.field-error {
+  font-size: 12px;
+  color: var(--error);
+  margin-top: 5px;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: var(--violet);
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+  margin-top: 6px;
+}
+.submit-btn:hover:not(:disabled) { background: var(--violet-dim); }
+.submit-btn:active:not(:disabled) { transform: translateY(1px); }
+.submit-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.submit-btn.teal { background: var(--teal); }
+.submit-btn.teal:hover:not(:disabled) { background: #1c9d8b; }
+
+.form-footer {
+  margin-top: 22px;
+  font-size: 13.5px;
+  color: var(--text-on-light-muted);
+  text-align: center;
+}
+.form-footer a {
+  color: var(--violet);
+  font-weight: 600;
+  text-decoration: none;
+}
+.form-footer a:hover { text-decoration: underline; }
+
+.banner-error {
+  background: #fdeceb;
+  border: 1px solid #f3c6c2;
+  color: var(--error);
+  font-size: 13px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+}

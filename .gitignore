@@ -1,0 +1,6 @@
+bin
+obj
+publish
+wwwroot
+Infrastructure/Migrations
+API/appsettings.json
