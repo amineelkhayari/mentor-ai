@@ -25,7 +25,6 @@ export class AnamProvider implements IAvatarProvider {
       video.id = 'anam-video';
       video.autoplay = true;
       video.playsInline = true;
-      video.muted = true;
       video.style.width = '100%';
       video.style.height = '100%';
 
