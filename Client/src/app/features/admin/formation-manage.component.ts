@@ -11,56 +11,132 @@ import { Categorie } from '../../core/models/categorie.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <h2 class="panel-title">formations</h2>
-    <p class="panel-sub">Schedule a live AI-tutor formation for a formation.</p>
+   <div class="admin-page">
 
-    <div class="banner-error" *ngIf="error">{{ error }}</div>
+  <div class="page-header">
+    <div>
+      <h1>Formations</h1>
+      <p>Manage training programs available on the platform.</p>
+    </div>
+
+    <div class="stats-badge">
+      {{ formations.length }} Formations
+    </div>
+  </div>
+
+  <div class="banner-error" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="form-card">
+
+    <h3>Add New Formation</h3>
 
     <form class="create-form" [formGroup]="form" (ngSubmit)="create()">
+
       <div class="field">
-        <label for="title">formation title</label>
-        <input id="title" formControlName="title" placeholder="e.g. Subnetting workshop" />
+        <label>Title</label>
+        <input
+          formControlName="title"
+          placeholder="e.g. Subnetting Workshop"
+        />
       </div>
+
       <div class="field">
-        <label for="description">formation description</label>
-        <input id="description" formControlName="description" placeholder="e.g. Learn the basics of subnetting" />
-      </div>
-      <div class="field">
-        <label for="categoryId">Formation</label>
-        <select id="categoryId" formControlName="categoryId">
-          <option [ngValue]="null" disabled>Select…</option>
-          <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.name }}</option>
+        <label>Category</label>
+        <select formControlName="categoryId">
+          <option [ngValue]="null" disabled>Select category</option>
+          <option *ngFor="let c of categories" [ngValue]="c.id">
+            {{ c.name }}
+          </option>
         </select>
       </div>
-     
-      <div class="field">
-        <label for="durationHours">duration Hours</label>
-        <input id="durationHours" type="number" formControlName="durationHours" placeholder="e.g. 2" />
+
+      <div class="field field-full">
+        <label>Description</label>
+        <textarea
+          formControlName="description"
+          rows="3"
+          placeholder="Formation description..."
+        ></textarea>
       </div>
-      
-      <button class="btn" type="submit" [disabled]="form.invalid || saving">
-        {{ saving ? 'Scheduling…' : 'Schedule formation' }}
+
+      <div class="field">
+        <label>Duration (Hours)</label>
+        <input
+          type="number"
+          formControlName="durationHours"
+          placeholder="2"
+        />
+      </div>
+
+      <button
+        class="btn-primary"
+        type="submit"
+        [disabled]="form.invalid || saving"
+      >
+        {{ saving ? 'Adding...' : 'Add Formation' }}
       </button>
+
     </form>
 
-    <table *ngIf="formations.length; else empty">
-      <thead>
-        <tr><th>Title</th><th>Formation</th><th>Trainer</th><th>Start</th><th></th></tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let s of formations">
-          <td>{{ s.title }}</td>
-          <td>{{ s.description }}</td>
-          <td>{{ s.durationHours }}</td>
+  </div>
 
-          <td>{{ categorieLabel(s.categoryId) }}</td>
-          <td><button class="btn danger" (click)="remove(s)">Delete</button></td>
-         
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #empty><p class="empty-state">No formations scheduled yet.</p></ng-template>
-  `,
+  <div *ngIf="formations.length; else empty" class="cards-grid">
+
+    <div class="entity-card" *ngFor="let f of formations">
+
+      <div class="card-header">
+
+        <h3>{{ f.title }}</h3>
+
+        <span class="count-badge">
+          {{ f.durationHours }}h
+        </span>
+
+      </div>
+
+      <p class="description">
+        {{ f.description }}
+      </p>
+
+      <div class="meta-list">
+        <div>
+          <strong>Category:</strong>
+          {{ categorieLabel(f.categoryId) }}
+        </div>
+
+        <div>
+          <strong>Duration:</strong>
+          {{ f.durationHours }} Hours
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button
+          class="btn-danger"
+          (click)="remove(f)"
+        >
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <ng-template #empty>
+
+    <div class="empty-state">
+      <div class="empty-icon">📚</div>
+      <h3>No Formations Found</h3>
+      <p>Create your first formation using the form above.</p>
+    </div>
+
+  </ng-template>
+
+</div>
+   `,
   styleUrl: './admin.css',
 })
 export class formationManageComponent implements OnInit {

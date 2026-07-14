@@ -9,10 +9,6 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login.component').then((m) => m.LoginComponent),
   },
   {
-    path: 'test',
-    loadComponent: () => import('./features/call-test/call-test.component').then((m) => m.SimliTestComponent),
-  },
-  {
     path: 'register',
     loadComponent: () =>
       import('./features/auth/register.component').then((m) => m.RegisterComponent),

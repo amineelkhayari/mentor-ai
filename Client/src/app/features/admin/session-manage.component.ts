@@ -13,59 +13,152 @@ import { Formateur } from '../../core/models/formateur.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <h2 class="panel-title">Sessions</h2>
-    <p class="panel-sub">Schedule a live AI-tutor session for a formation.</p>
+    <div class="admin-page">
 
-    <div class="banner-error" *ngIf="error">{{ error }}</div>
+  <div class="page-header">
+    <div>
+      <h1>Sessions</h1>
+      <p>Schedule and manage live AI tutor sessions.</p>
+    </div>
+
+    <div class="stats-badge">
+      {{ sessions.length }} Sessions
+    </div>
+  </div>
+
+  <div class="banner-error" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="form-card">
+
+    <h3>Create Session</h3>
 
     <form class="create-form" [formGroup]="form" (ngSubmit)="create()">
+
       <div class="field">
-        <label for="title">Session title</label>
-        <input id="title" formControlName="title" placeholder="e.g. Subnetting workshop" />
+        <label>Session Title</label>
+        <input
+          formControlName="title"
+          placeholder="e.g. Subnetting Workshop"
+        />
       </div>
+
       <div class="field">
-        <label for="formationId">Formation</label>
-        <select id="formationId" formControlName="formationId">
-          <option [ngValue]="null" disabled>Select…</option>
-          <option *ngFor="let f of formations" [ngValue]="f.id">{{ f.title }}</option>
+        <label>Formation</label>
+        <select formControlName="formationId">
+          <option [ngValue]="null" disabled>Select formation</option>
+          <option *ngFor="let f of formations" [ngValue]="f.id">
+            {{ f.title }}
+          </option>
         </select>
       </div>
+
       <div class="field">
-        <label for="formateurId">Trainer</label>
-        <select id="formateurId" formControlName="formateurId">
-          <option [ngValue]="null" disabled>Select…</option>
-          <option *ngFor="let t of formateurs" [ngValue]="t.id">{{ t.voiceProvider }} · {{ t.lang }}</option>
+        <label>Trainer</label>
+        <select formControlName="formateurId">
+          <option [ngValue]="null" disabled>Select trainer</option>
+          <option *ngFor="let t of formateurs" [ngValue]="t.id">
+            {{ t.name }}
+          </option>
         </select>
       </div>
+
       <div class="field">
-        <label for="startDate">Start</label>
-        <input id="startDate" type="datetime-local" formControlName="startDate" />
+        <label>Start Date</label>
+        <input
+          type="datetime-local"
+          formControlName="startDate"
+        />
       </div>
+
       <div class="field">
-        <label for="endDate">End</label>
-        <input id="endDate" type="datetime-local" formControlName="endDate" />
+        <label>End Date</label>
+        <input
+          type="datetime-local"
+          formControlName="endDate"
+        />
       </div>
-      <button class="btn" type="submit" [disabled]="form.invalid || saving">
-        {{ saving ? 'Scheduling…' : 'Schedule session' }}
+
+      <button
+        class="btn-primary"
+        type="submit"
+        [disabled]="form.invalid || saving"
+      >
+        {{ saving ? 'Creating...' : 'Create Session' }}
       </button>
+
     </form>
 
-    <table *ngIf="sessions.length; else empty">
-      <thead>
-        <tr><th>Title</th><th>Formation</th><th>Trainer</th><th>Start</th><th></th></tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let s of sessions">
-          <td>{{ s.title }}</td>
-          <td>{{ s.formation?.title ?? formationTitle(s.formationId) }}</td>
-          <td>{{ s.formateur?.voiceProvider ?? formateurLabel(s.formateurId) }}</td>
-          <td>{{ s.startDate | date: 'medium' }}</td>
-          <td><button class="btn danger" (click)="remove(s)">Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #empty><p class="empty-state">No sessions scheduled yet.</p></ng-template>
-  `,
+  </div>
+
+  <div *ngIf="sessions.length; else empty" class="cards-grid">
+
+    <div class="entity-card" *ngFor="let s of sessions">
+
+      <div class="card-header">
+
+        <h3>{{ s.title }}</h3>
+
+        <span class="count-badge">
+          Live
+        </span>
+
+      </div>
+
+      <p class="description">
+        Scheduled training session.
+      </p>
+
+      <div class="meta-list">
+
+        <div>
+          <strong>Formation:</strong>
+          {{ s.formation?.title ?? formationTitle(s.formationId) }}
+        </div>
+
+        <div>
+          <strong>Trainer:</strong>
+          {{ s.formateur?.name ?? formateurLabel(s.formateurId) }}
+        </div>
+
+        <div>
+          <strong>Start:</strong>
+          {{ s.startDate | date:'medium' }}
+        </div>
+
+        <div>
+          <strong>End:</strong>
+          {{ s.endDate | date:'medium' }}
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <button
+          class="btn-danger"
+          (click)="remove(s)"
+        >
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <ng-template #empty>
+
+    <div class="empty-state">
+      <div class="empty-icon">🎥</div>
+      <h3>No Sessions Found</h3>
+      <p>Create your first session using the form above.</p>
+    </div>
+
+  </ng-template>
+
+</div>
+    `,
   styleUrl: './admin.css',
 })
 export class SessionManageComponent implements OnInit {

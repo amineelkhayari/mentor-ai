@@ -10,87 +10,132 @@ import { AvatarProviderFactory } from '../../avatar-engine/avatar-provider.facto
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <h2 class="panel-title">AI trainers</h2>
-    <p class="panel-sub">
-      Each trainer pairs a system prompt with an avatar engine. New engines only need to be
-      registered once in <code>app.config.ts</code> — they'll show up in the dropdown below.
-    </p>
+    <div class="admin-page">
 
-    <div class="banner-error" *ngIf="error">{{ error }}</div>
+  <div class="page-header">
+    <div>
+      <h1>AI Trainers</h1>
+      <p>Manage avatar trainers and AI providers.</p>
+    </div>
+
+    <div class="stats-badge">
+      {{ formateurs.length }} Trainers
+    </div>
+  </div>
+
+  <div class="banner-error" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="form-card">
+    <h3>Add New Trainer</h3>
 
     <form class="create-form" [formGroup]="form" (ngSubmit)="create()">
-      <div class="field">
-        <label for="voiceProvider">Avatar engine</label>
-          <input formControlName="voiceProvider" placeholder="Avatar ID from provider" />
 
-        <!-- <select id="voiceProvider" formControlName="voiceProvider">
-          <option *ngFor="let key of availableProviders" [value]="key">{{ key }}</option>
-        </select> -->
-      </div>
       <div class="field">
-  <label>Trainer name</label>
-  <input formControlName="name" placeholder="Networking Tutor" />
-</div>
+        <label>Trainer Name</label>
+        <input formControlName="name" placeholder="Networking Tutor" />
+      </div>
 
-<div class="field">
-  <label>Avatar ID</label>
-  <input formControlName="avatarId" placeholder="Avatar ID from provider" />
-</div>
+      <div class="field">
+        <label>Avatar Provider</label>
+        <select formControlName="providerNom">
+          <option [value]="1">Anam</option>
+          <option [value]="2">Tavus</option>
+        </select>
+      </div>
 
-<div class="field">
-  <label>Avatar Provider</label>
-  <select formControlName="providerNom">
-    <option [value]="1">Anam</option>
-    <option [value]="2">Tavus</option>
-  </select>
-</div>
       <div class="field">
-        <label for="llM_Provider">LLM provider</label>
-        <input id="llM_Provider" formControlName="llM_Provider" placeholder="e.g. claude-sonnet-5" />
+        <label>Avatar ID</label>
+        <input formControlName="avatarId" placeholder="Avatar ID" />
       </div>
+
       <div class="field">
-        <label for="lang">Language</label>
-        <input id="lang" formControlName="lang" placeholder="en" style="min-width: 70px;" />
+        <label>Voice Provider</label>
+        <input formControlName="voiceProvider" placeholder="Voice Provider ID" />
       </div>
+
       <div class="field">
-        <label for="firstMessage">First message</label>
-        <input id="firstMessage" formControlName="firstMessage" placeholder="Hi, ready to start?" />
+        <label>LLM Provider</label>
+        <input formControlName="llM_Provider" placeholder="Claude / GPT / Gemini..." />
       </div>
-      <div class="field" style="flex-basis: 100%;">
-        <label for="systemPrompt">System prompt</label>
-        <textarea id="systemPrompt" formControlName="systemPrompt" rows="2" placeholder="You are a patient networking tutor…"></textarea>
+
+      <div class="field">
+        <label>Language</label>
+        <input formControlName="lang" placeholder="en" />
       </div>
-      <button class="btn" type="submit" [disabled]="form.invalid || saving">
-        {{ saving ? 'Adding…' : 'Add trainer' }}
+
+      <div class="field">
+        <label>First Message</label>
+        <input formControlName="firstMessage" placeholder="Hi, ready to start?" />
+      </div>
+
+      <div class="field field-full">
+        <label>System Prompt</label>
+        <textarea
+          formControlName="systemPrompt"
+          rows="4"
+          placeholder="You are a helpful AI trainer..."
+        ></textarea>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="submit"
+        [disabled]="form.invalid || saving"
+      >
+        {{ saving ? 'Adding...' : 'Add Trainer' }}
       </button>
-    </form>
 
-    <table *ngIf="formateurs.length; else empty">
-      <thead>
- <th>Name</th>
-    <th>Provider</th>
-    <th>Avatar ID</th>
-    <th>Voice Provider</th>
-    <th>LLM Provider</th>
-    <th>Language</th>
-    <th>First Message</th>
-    <th>Sessions</th>
-    <th>Actions</th>      </thead>
-      <tbody>
-        <tr *ngFor="let f of formateurs">
-          <td>{{ f.name }}</td>
-<td>{{ f.providerNom === 1 ? 'Anam' : 'Tavus' }}</td>
-<td>{{ f.avatarId }}</td>
-<td>{{ f.voiceProvider }}</td>
-<td>{{ f.llM_Provider }}</td>
-<td>{{ f.lang }}</td>
-<td>{{ f.firstMessage }}</td>
-          <td><button class="btn danger" (click)="remove(f)">Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #empty><p class="empty-state">No trainers yet — add the first one above.</p></ng-template>
-  `,
+    </form>
+  </div>
+
+  <div *ngIf="formateurs.length; else empty" class="cards-grid">
+
+    <div class="entity-card" *ngFor="let f of formateurs">
+
+      <div class="card-header">
+        <h3>{{ f.name }}</h3>
+
+        <span class="count-badge">
+          {{ f.providerNom === 1 ? 'Anam' : 'Tavus' }}
+        </span>
+      </div>
+
+      <p class="description">
+        {{ f.firstMessage }}
+      </p>
+
+      <div class="meta-list">
+        <div><strong>Language:</strong> {{ f.lang }}</div>
+        <div><strong>Avatar ID:</strong> {{ f.avatarId }}</div>
+        <div><strong>Voice:</strong> {{ f.voiceProvider }}</div>
+        <div><strong>LLM:</strong> {{ f.llM_Provider }}</div>
+      </div>
+
+      <div class="card-footer">
+        <button
+          class="btn-danger"
+          (click)="remove(f)"
+        >
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <ng-template #empty>
+    <div class="empty-state">
+      <div class="empty-icon">🤖</div>
+      <h3>No Trainers Found</h3>
+      <p>Create your first AI trainer using the form above.</p>
+    </div>
+  </ng-template>
+
+</div>
+         `,
   styleUrl: './admin.css',
 })
 export class FormateurManageComponent implements OnInit {

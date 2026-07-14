@@ -13,77 +13,193 @@ import { ROLES } from '../../core/models/role.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, FormsModule],
   template: `
-    <h2 class="panel-title">Users</h2>
-    <p class="panel-sub">
-      Create accounts and assign roles. Basic users can only join and launch sessions.
-    </p>
+   <div class="admin-page">
 
-    <div class="banner-error" *ngIf="error">{{ error }}</div>
+  <div class="page-header">
+    <div>
+      <h1>Users</h1>
+      <p>Create accounts and manage user roles.</p>
+    </div>
 
-    <!-- New role, in case "Manager" doesn't exist yet on the backend -->
-    <form class="create-form" (ngSubmit)="createRole()" style="margin-bottom: 14px;">
+    <div class="stats-badge">
+      {{ users.length }} Users
+    </div>
+  </div>
+
+  <div class="banner-error" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <!-- Create Role -->
+
+  <div class="form-card">
+
+    <h3>Create Role</h3>
+
+    <form class="create-form" (ngSubmit)="createRole()">
+
       <div class="field">
-        <label for="newRole">New role name</label>
-        <input id="newRole" [(ngModel)]="newRoleName" name="newRole" placeholder="e.g. Manager" />
+        <label>Role Name</label>
+        <input
+          [(ngModel)]="newRoleName"
+          name="newRole"
+          placeholder="Manager"
+        />
       </div>
-      <button class="btn ghost" type="submit" [disabled]="!newRoleName">Create role</button>
+
+      <button
+        class="btn-primary"
+        type="submit"
+        [disabled]="!newRoleName"
+      >
+        Create Role
+      </button>
+
     </form>
 
-    <!-- New user + role assignment -->
+  </div>
+
+  <!-- Create User -->
+
+  <div class="form-card">
+
+    <h3>Create User</h3>
+
     <form class="create-form" [formGroup]="form" (ngSubmit)="create()">
+
       <div class="field">
-        <label for="displayName">Display name</label>
-        <input id="displayName" formControlName="displayName" />
+        <label>Display Name</label>
+        <input formControlName="displayName" />
       </div>
+
       <div class="field">
-        <label for="userName">Username</label>
-        <input id="userName" formControlName="userName" />
+        <label>Username</label>
+        <input formControlName="userName" />
       </div>
+
       <div class="field">
-        <label for="email">Email</label>
-        <input id="email" type="email" formControlName="email" />
+        <label>Email</label>
+        <input
+          type="email"
+          formControlName="email"
+        />
       </div>
+
       <div class="field">
-        <label for="role">Role</label>
-        <select id="role" formControlName="role">
-          <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+        <label>Role</label>
+        <select formControlName="role">
+          <option *ngFor="let r of roles" [value]="r">
+            {{ r }}
+          </option>
         </select>
       </div>
-      <button class="btn" type="submit" [disabled]="form.invalid || saving">
-        {{ saving ? 'Creating…' : 'Create user' }}
-      </button>
-    </form>
-    <p class="panel-sub" style="margin-top:-10px;">
-      Note: this calls the same /api/Account/register endpoint as public sign-up (it has no
-      password field), then assigns the chosen role via /api/Account/roles/assign.
-    </p>
 
-    <table *ngIf="users.length; else empty">
-      <thead>
-        <tr><th>Name</th><th>Email</th><th>Roles</th><th>Assign role</th></tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let u of users">
-          <td>{{ u.displayName || u.userName }}</td>
-          <td>{{ u.email }}</td>
-          <td>
-            <span class="tag" [class.admin]="r === 'Admin'" [class.manager]="r === 'Manager'" [class.user]="r === 'User'"
-                  *ngFor="let r of u.roles" style="margin-right:4px;">
-              {{ r }}
-              <button (click)="removeRole(u, r)" style="background:none;border:none;color:inherit;cursor:pointer;margin-left:4px;">×</button>
-            </span>
-            <!-- <span *ngIf="!u.roles?.length" style="color:#8d90a6;">No role</span> -->
-          </td>
-          <td>
-            <select #roleSelect (change)="assignRole(u, roleSelect.value)">
-              <option value="" disabled selected>Add role…</option>
-              <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
-            </select>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #empty><p class="empty-state">No users yet.</p></ng-template>
+      <button
+        class="btn-primary"
+        type="submit"
+        [disabled]="form.invalid || saving"
+      >
+        {{ saving ? 'Creating...' : 'Create User' }}
+      </button>
+
+    </form>
+
+  </div>
+
+  <!-- Users -->
+
+  <div *ngIf="users.length; else empty" class="cards-grid">
+
+    <div class="entity-card" *ngFor="let u of users">
+
+      <div class="card-header">
+
+        <h3>
+          {{ u.displayName || u.userName }}
+        </h3>
+
+        <span class="count-badge">
+          {{ u.roles?.length || 0 }}
+        </span>
+
+      </div>
+
+      <p class="description">
+        {{ u.email }}
+      </p>
+
+      <div class="meta-list">
+
+        <div>
+          <strong>Username:</strong>
+          {{ u.userName }}
+        </div>
+
+        <div>
+          <strong>Email:</strong>
+          {{ u.email }}
+        </div>
+
+      </div>
+
+      <div class="roles-section">
+
+        <div
+          *ngFor="let r of u.roles"
+          class="role-tag"
+          [class.role-admin]="r === 'Admin'"
+          [class.role-manager]="r === 'Manager'"
+          [class.role-user]="r === 'User'"
+        >
+          {{ r }}
+
+          <button
+            type="button"
+            (click)="removeRole(u, r)"
+          >
+            ×
+          </button>
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+
+        <select
+          #roleSelect
+          class="role-select"
+          (change)="assignRole(u, roleSelect.value)"
+        >
+          <option value="" selected disabled>
+            Add Role...
+          </option>
+
+          <option
+            *ngFor="let r of roles"
+            [value]="r"
+          >
+            {{ r }}
+          </option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <ng-template #empty>
+
+    <div class="empty-state">
+      <div class="empty-icon">👥</div>
+      <h3>No Users Found</h3>
+      <p>Create your first user using the form above.</p>
+    </div>
+
+  </ng-template>
+
+</div>
   `,
   styleUrl: './admin.css',
 })

@@ -10,18 +10,72 @@ import { Session } from '../../core/models/session.model';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <h2>All sessions</h2>
-    <ul>
-      <li *ngFor="let s of sessions" style="margin-bottom: 12px;">
-        <strong>{{ s.title }}</strong>
-        — {{ s.startDate | date: 'medium' }}
-        <span *ngIf="s.formateur"> · Trainer engine: {{ s.formateur.voiceProvider }}</span>
-        <br />
-        <button (click)="join(s)" [disabled]="s.sessionJoined == 'Joined'">Join & launch video call</button>
-      </li>
-    </ul>
-    <p *ngIf="!sessions.length" style="color:#8d90a6;">No sessions scheduled yet.</p>
+    <div class="sessions-page">
+  <div class="page-header">
+    <div>
+      <h1>Training Sessions</h1>
+      <p>Join live sessions and interact with your AI trainer.</p>
+    </div>
+
+    <div class="stats-badge">
+      {{ sessions.length }} Session{{ sessions.length !== 1 ? 's' : '' }}
+    </div>
+  </div>
+
+  <div *ngIf="sessions.length; else emptyState" class="sessions-grid">
+    <div class="session-card" *ngFor="let s of sessions">
+
+      <div class="card-header">
+        <h3>{{ s.title }}</h3>
+
+        <span
+          class="status-badge"
+          [class.joined]="s.sessionJoined === 'Joined'"
+        >
+          {{ s.sessionJoined === 'Joined' ? 'Joined' : 'Available' }}
+        </span>
+      </div>
+
+      <div class="session-info">
+        <div class="info-item">
+          📅 {{ s.startDate | date:'medium' }}
+        </div>
+
+        <div class="info-item" *ngIf="s.formateur">
+          🎙️ {{ s.formateur.voiceProvider }}
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button
+          class="join-btn"
+          [disabled]="s.sessionJoined === 'Joined'"
+          (click)="join(s)"
+        >
+          <span *ngIf="s.sessionJoined !== 'Joined'">
+            Join Video Session
+          </span>
+
+          <span *ngIf="s.sessionJoined === 'Joined'">
+            Already Joined
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-icon">🎥</div>
+      <h3>No sessions available</h3>
+      <p>Upcoming training sessions will appear here.</p>
+    </div>
+  </ng-template>
+</div>
   `,
+    styleUrl: './session.css',
+
 })
 export class SessionListComponent implements OnInit {
   sessions: Session[] = [];

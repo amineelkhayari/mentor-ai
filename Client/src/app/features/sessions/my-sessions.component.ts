@@ -10,22 +10,79 @@ import { AvatarProvider } from '../../core/models/formateur.model';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <h2>My sessions</h2>
-    <p *ngIf="!joined.length" style="color:#8d90a6;">
-      You haven't joined any sessions yet — head to "All sessions" to find one.
-    </p>
-    <ul>
-      <li *ngFor="let us of joined" style="margin-bottom: 12px;">
-        <strong>{{ us.session?.title ?? ('Session #' + us.sessionId) }}</strong>
-        <span *ngIf="us.session"> — {{ us.session.startDate | date: 'medium' }}</span>
-        <span [style.color]="us.isCompleted ? '#5fe0cc' : '#a79bff'">
-          {{ us.isCompleted ? ' · Completed' : ' · Upcoming' }}
+  <div class="sessions-page">
+  <div class="page-header">
+    <div>
+      <h1>My Sessions</h1>
+      <p>Access the training sessions you have already joined.</p>
+    </div>
+
+    <div class="stats-badge">
+      {{ joined.length }} Session{{ joined.length !== 1 ? 's' : '' }}
+    </div>
+  </div>
+
+  <div *ngIf="joined.length; else emptyState" class="sessions-grid">
+
+    <div class="session-card" *ngFor="let us of joined">
+
+      <div class="card-header">
+        <h3>
+          {{ us.session?.title ?? ('Session #' + us.sessionId) }}
+        </h3>
+
+        <span
+          class="status-badge"
+          [class.joined]="!us.isCompleted"
+        >
+          {{ us.isCompleted ? 'Completed' : 'Upcoming' }}
         </span>
-        <br />
-        <button (click)="launch(us)" [disabled]="us.isCompleted">Launch session</button>
-      </li>
-    </ul>
+      </div>
+
+      <div class="session-info">
+
+        <div class="info-item" *ngIf="us.session">
+          📅 {{ us.session.startDate | date:'medium' }}
+        </div>
+
+        <div class="info-item">
+          {{
+            us.isCompleted
+              ? '✅ Session completed'
+              : '⏳ Waiting for session start'
+          }}
+        </div>
+
+      </div>
+
+      <div class="card-footer">
+        <button
+          class="join-btn"
+          (click)="launch(us)"
+          [disabled]="us.isCompleted"
+        >
+          {{ us.isCompleted ? 'Session Completed' : 'Launch Session' }}
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-icon">📚</div>
+      <h3>No joined sessions</h3>
+      <p>
+        You haven't joined any sessions yet — head to
+        <strong>All Sessions</strong> to find one.
+      </p>
+    </div>
+  </ng-template>
+</div>
   `,
+    styleUrl: './session.css',
+
 })
 export class MySessionsComponent implements OnInit {
   joined: UserSession[] = [];

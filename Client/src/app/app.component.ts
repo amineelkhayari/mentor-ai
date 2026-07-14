@@ -9,23 +9,43 @@ import { AuthService } from './core/auth/auth.service';
   standalone: true,
   imports: [CommonModule, RouterOutlet, RouterLink],
   template: `
-    <nav
-      *ngIf="showNav"
-      style="padding:12px 20px; display:flex; gap:16px; align-items:center; border-bottom:1px solid #222;"
+   <nav *ngIf="showNav" class="navbar">
+  <div class="navbar-brand">
+    <span class="logo">🎓</span>
+    <span class="title">MentorAI Platform</span>
+  </div>
+
+  <div class="navbar-links">
+    <a routerLink="/formations" routerLinkActive="active">Formations</a>
+    <a routerLink="/sessions" routerLinkActive="active">Sessions</a>
+    <a routerLink="/my-sessions" routerLinkActive="active">My Sessions</a>
+
+    <a
+      *ngIf="auth.isAdmin()"
+      routerLink="/admin"
+      routerLinkActive="active"
+      class="admin-link"
     >
-      <a routerLink="/formations">Formations</a>
-      <a routerLink="/sessions">All sessions</a>
-      <a routerLink="/my-sessions">My sessions</a>
-      <a *ngIf="auth.isAdmin()" routerLink="/admin" style="color:#a79bff;">Admin</a>
-      <span style="flex:1"></span>
-      <button *ngIf="auth.isAuthenticated()" (click)="logout()" style="background:none;border:none;color:inherit;cursor:pointer;">
-        Log out
-      </button>
-    </nav>
-    <main [style.padding]="showNav ? '20px' : '0'">
-      <router-outlet></router-outlet>
-    </main>
+      Admin
+    </a>
+  </div>
+
+  <div class="navbar-actions">
+    <button
+      *ngIf="auth.isAuthenticated()"
+      (click)="logout()"
+      class="logout-btn"
+    >
+      Logout
+    </button>
+  </div>
+</nav>
+
+<main class="page-content" [class.no-nav]="!showNav">
+  <router-outlet></router-outlet>
+</main>
   `,
+    styleUrl: './app.component.css'
 })
 export class AppComponent {
   showNav = true;

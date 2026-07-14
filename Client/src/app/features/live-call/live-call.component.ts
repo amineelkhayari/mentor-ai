@@ -14,20 +14,153 @@ import { AvatarProvider } from '../../core/models/formateur.model';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <h2 *ngIf="session">{{ session.title }}</h2>
+   <div class="live-page">
 
-    <p *ngIf="status === 'loading'">Loading session…</p>
-    <p *ngIf="status === 'connecting'">Connecting to {{ session?.formateur?.voiceProvider }}…</p>
-    <p *ngIf="status === 'error'" style="color:#f66;">
-      Could not start the call. {{ errorMessage }}
-    </p>
-    <!-- <video id="persona-video" autoplay playsinline class="call-box"></video> -->
-<div #callContainer autoplay playsinline  class="call-box"></div>
-<ng-container *ngIf="status === 'connected'">
-      <input [(ngModel)]="textInput" (keyup.enter)="sendText()" placeholder="Type a message..." />
-    </ng-container>
-    <button *ngIf="status === 'connected'" (click)="endCall()">End call</button>
-  `,
+  <div class="session-header" *ngIf="session">
+
+    <div>
+      <h1>{{ session.title || 'Live Training Session' }}</h1>
+
+      <p class="formation-name">
+        📚 {{ session.formation?.title }}
+      </p>
+    </div>
+
+    <div class="status-pill" [class.connected]="status === 'connected'">
+      {{ status | uppercase }}
+    </div>
+
+  </div>
+
+  <div class="content-grid">
+
+    <!-- LEFT SIDE -->
+    <div class="video-section">
+
+      <div *ngIf="status === 'loading'" class="state-card">
+        Loading session...
+      </div>
+
+      <div *ngIf="status === 'connecting'" class="state-card">
+        Connecting to {{ session?.formateur?.name }}...
+      </div>
+
+      <div *ngIf="status === 'error'" class="state-card error">
+        {{ errorMessage }}
+      </div>
+
+      <div
+        #callContainer
+        class="call-box"
+      ></div>
+
+      <div
+        class="chat-box"
+        *ngIf="status === 'connected'"
+      >
+        <input
+          [(ngModel)]="textInput"
+          (keyup.enter)="sendText()"
+          placeholder="Ask your trainer a question..."
+        />
+
+        <button (click)="sendText()">
+          Send
+        </button>
+      </div>
+
+      <button
+        *ngIf="status === 'connected'"
+        class="end-call-btn"
+        (click)="endCall()"
+      >
+        End Session
+      </button>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="info-panel" *ngIf="session">
+
+      <div class="info-card">
+        <h3>Formation</h3>
+
+        <div class="info-row">
+          <span>Title</span>
+          <strong>{{ session.formation?.title }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Duration</span>
+          <strong>{{ session.formation?.durationHours }} hours</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Description</span>
+          <strong>{{ session.formation?.description }}</strong>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>Trainer</h3>
+
+        <div class="trainer-profile">
+
+          <div class="trainer-avatar">
+            {{ session.formateur?.name?.charAt(0) }}
+          </div>
+
+          <div>
+            <h4>{{ session.formateur?.name }}</h4>
+            <p>{{ session.formateur?.lang }}</p>
+          </div>
+
+        </div>
+
+        <div class="info-row">
+          <span>Provider</span>
+          <strong>{{ session.avatarSessionResponse?.providerName }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Language</span>
+          <strong>{{ session.formateur?.lang }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Welcome Message</span>
+          <strong>{{ session.formateur?.firstMessage }}</strong>
+        </div>
+
+      </div>
+
+      <div class="info-card">
+        <h3>Schedule</h3>
+
+        <div class="info-row">
+          <span>Start</span>
+          <strong>{{ session.startDate | date:'medium' }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>End</span>
+          <strong>{{ session.endDate | date:'medium' }}</strong>
+        </div>
+
+        <div class="info-row">
+          <span>Participants</span>
+          <strong>0</strong>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+   `,
+  styleUrl: './call.css',
+
 })
 export class LiveCallComponent implements OnInit, OnDestroy {
   @ViewChild('callContainer', { static: true }) containerRef!: ElementRef<HTMLElement>;

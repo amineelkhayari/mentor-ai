@@ -9,40 +9,95 @@ import { Categorie } from '../../core/models/categorie.model';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <h2 class="panel-title">Categories</h2>
-    <p class="panel-sub">Group formations by subject area.</p>
 
-    <div class="banner-error" *ngIf="error">{{ error }}</div>
+<div class="admin-page">
 
-    <form class="create-form" [formGroup]="form" (ngSubmit)="create()">
+  <div class="page-header">
+    <div>
+      <h1>Categories</h1>
+      <p>Group formations by subject area.</p>
+    </div>
+
+    <div class="stats-badge">
+      {{ categories.length }} Categories
+    </div>
+  </div>
+
+  <div class="banner-error" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <div class="form-card">
+    <h3>Add New Category</h3>
+
+    <form [formGroup]="form" (ngSubmit)="create()" class="create-form">
+
       <div class="field">
-        <label for="name">Name</label>
-        <input id="name" formControlName="name" placeholder="e.g. Networking" />
+        <label>Name</label>
+        <input
+          formControlName="name"
+          placeholder="e.g. Networking"
+        />
       </div>
+
       <div class="field">
-        <label for="description">Description</label>
-        <input id="description" formControlName="description" placeholder="Optional" />
+        <label>Description</label>
+        <input
+          formControlName="description"
+          placeholder="Optional description"
+        />
       </div>
-      <button class="btn" type="submit" [disabled]="form.invalid || saving">
-        {{ saving ? 'Adding…' : 'Add category' }}
+
+      <button
+        class="btn-primary"
+        type="submit"
+        [disabled]="form.invalid || saving"
+      >
+        {{ saving ? 'Adding...' : 'Add Category' }}
       </button>
-    </form>
 
-    <table *ngIf="categories.length; else empty">
-      <thead>
-        <tr><th>Name</th><th>Description</th><th>Formations</th><th></th></tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let c of categories">
-          <td>{{ c.name }}</td>
-          <td>{{ c.description || '—' }}</td>
-          <td>{{ c.formations?.length ?? 0 }}</td>
-          <td><button class="btn danger" (click)="remove(c)">Delete</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <ng-template #empty><p class="empty-state">No categories yet — add the first one above.</p></ng-template>
-  `,
+    </form>
+  </div>
+
+  <div *ngIf="categories.length; else empty" class="cards-grid">
+
+    <div class="entity-card" *ngFor="let c of categories">
+
+      <div class="card-header">
+        <h3>{{ c.name }}</h3>
+
+        <span class="count-badge">
+          {{ c.formations?.length ?? 0 }}
+        </span>
+      </div>
+
+      <p class="description">
+        {{ c.description || 'No description available.' }}
+      </p>
+
+      <div class="card-footer">
+        <button
+          class="btn-danger"
+          (click)="remove(c)"
+        >
+          Delete
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <ng-template #empty>
+    <div class="empty-state">
+      <div class="empty-icon">📂</div>
+      <h3>No Categories Found</h3>
+      <p>Create your first category using the form above.</p>
+    </div>
+  </ng-template>
+
+</div>
+`,
   styleUrl: './admin.css',
 })
 export class CategoryManageComponent implements OnInit {
