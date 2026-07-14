@@ -40,6 +40,7 @@ import { AuthService } from '../../core/auth/auth.service';
           <input
             id="password"
             type="password"
+            value="Pa$$w0rd"
             formControlName="password"
             placeholder="••••••••"
             [class.invalid]="isInvalid('password')"

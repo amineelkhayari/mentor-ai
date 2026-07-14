@@ -6,9 +6,10 @@
     "start": "ng serve",
     "start:api": "dotnet run --project ../API/API.csproj",
     "start:all": "concurrently \"npm run start\" \"npm run start:api\"",
-    "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "build": "ng build --configuration tester"
+
   },
   "private": true,
   "dependencies": {

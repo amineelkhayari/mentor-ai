@@ -25,12 +25,18 @@ try
     app.UseExceptionHandler();
     app.UseStatusCodePagesWithReExecute("/errors/{0}");
     app.UseHttpsRedirection();
+     var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+    if (Directory.Exists(path))
+    {
+        app.UseStaticFiles();
+    }
     app.UseCors();
     app.UseAuthentication();
     app.UseAuthorization();
     //app.UseRouting();
 
     app.MapControllers();
+    app.MapFallbackToController("Index", "Fallback");
 
     app.Run();
 }

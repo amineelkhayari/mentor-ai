@@ -119,7 +119,7 @@ import { ROLES } from '../../core/models/role.model';
         </h3>
 
         <span class="count-badge">
-          {{ u.roles?.length || 0 }}
+          {{ u.roles?.length ?? 0 }}
         </span>
 
       </div>
