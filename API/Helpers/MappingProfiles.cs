@@ -11,11 +11,21 @@ public class MappingProfiles : Profile
         // ApplicationUser
         CreateMap<ApplicationUser, ApplicationUserDto>().ReverseMap();
         CreateMap<Categorie, CategorieDto>().ReverseMap();
-        CreateMap<Formation, FormationDto>().ReverseMap();
+        CreateMap<Formation, CreateFormationDto>()
+        .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name.ToString()))
+        .ReverseMap();
+
+        CreateMap<Formation, FormationDto>()
+        .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name.ToString()))
+        .ReverseMap();
         CreateMap<Session, SessionDto>().ReverseMap();
+        CreateMap<Session, CreateSessionDto>().ReverseMap();
 
         CreateMap<Formateur, FormateurDto>().ReverseMap();
         CreateMap<UserSession, UserSessionDto>().ReverseMap();
+        CreateMap<UserSession, UserSessionDetailDto>()
+        .ForMember(dest=> dest.SessionName, opt=>opt.MapFrom(src=> src.Session.Name))
+        .ReverseMap();
 
         // Payment
         // CreateMap<Payment, PaymentDto>().ReverseMap()

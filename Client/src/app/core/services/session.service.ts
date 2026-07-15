@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ApiCrudService } from './api-crud.service';
 import { Session, CreateSessionDto, UpdateSessionDto } from '../models/session.model';
+import { UpdateUserSessionDto } from '../models/user-session.model';
 
 @Injectable({ providedIn: 'root' })
 export class SessionService extends ApiCrudService<Session, CreateSessionDto, UpdateSessionDto> {

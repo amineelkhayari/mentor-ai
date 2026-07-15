@@ -1,12 +1,15 @@
-
 namespace API.Dtos;
 
 // CREATE DTO
 public class CreateFormationDto
 {
+    public int Id { get; set; }
     public string Title { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-    public decimal Price { get; set; }
+    public int DurationHours { get; set; }
+    public int CategoryId { get; set; }
+    public string CategoryName { get; set; }
+
 }
 
 // UPDATE DTO
@@ -25,6 +28,11 @@ public class FormationDto
     public string Description { get; set; } = string.Empty;
     public int DurationHours { get; set; }
     public int CategoryId { get; set; }
+    public string CategoryName { get; set; } = string.Empty;
+    public ICollection<CreateSessionDto> Sessions { get; set; }
+
+
+
 }
 
 // SEARCH DTO (OPTIONAL)

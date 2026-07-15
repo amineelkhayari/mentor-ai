@@ -5,6 +5,7 @@ export interface UserSession extends BaseEntity {
   userId: string;
   sessionId: number;
   session?: Session;
+  sessionName: string;
   registrationDate: string;
   isCompleted: boolean;
 }

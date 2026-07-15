@@ -28,7 +28,7 @@ export class UserSessionService extends ApiCrudService<UserSession, CreateUserSe
     return this.getAll();
   }
 
-  markCompleted(userSession: UserSession): Observable<UserSession> {
-    return this.update(userSession.id, { sessionId: userSession.sessionId, isCompleted: true });
+  markCompleted(id:number, userSession: UpdateUserSessionDto): Observable<UpdateUserSessionDto> {
+    return this.update(id, userSession);
   }
 }

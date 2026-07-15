@@ -24,6 +24,8 @@ public class UserSessionDto
 
     public DateTime RegistrationDate { get; set; }
     public bool IsCompleted { get; set; }
+    public string SessionName { get; set; } = string.Empty;
+
 }
 
 // DETAILED RESPONSE (with navigation data)
@@ -35,7 +37,7 @@ public class UserSessionDetailDto
     public string UserName { get; set; } = string.Empty;
 
     public int SessionId { get; set; }
-    public string SessionTitle { get; set; } = string.Empty;
+    public string SessionName { get; set; } = string.Empty;
 
     public DateTime RegistrationDate { get; set; }
     public bool IsCompleted { get; set; }

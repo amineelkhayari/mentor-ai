@@ -8,6 +8,7 @@ import { IAvatarProvider } from '../../avatar-engine/models/avatar-provider.inte
 import { Session } from '../../core/models/session.model';
 import { FormsModule } from '@angular/forms';
 import { AvatarProvider } from '../../core/models/formateur.model';
+import { UserSessionService } from '../../core/services/user-session.service';
 
 @Component({
   selector: 'app-live-call',
@@ -19,7 +20,7 @@ import { AvatarProvider } from '../../core/models/formateur.model';
   <div class="session-header" *ngIf="session">
 
     <div>
-      <h1>{{ session.title || 'Live Training Session' }}</h1>
+      <h1>{{ session.name || 'Live Training Session' }}</h1>
 
       <p class="formation-name">
         📚 {{ session.formation?.title }}
@@ -40,6 +41,14 @@ import { AvatarProvider } from '../../core/models/formateur.model';
       <div *ngIf="status === 'loading'" class="state-card">
         Loading session...
       </div>
+      <button
+        *ngIf="(status === 'sesionloaded' || 'loaded')"
+        class="start-call-btn"
+        [disabled]='session?.userSessions?.[0]?.isCompleted'
+        (click)="startSession()"
+      >
+        Start Session
+      </button>
 
       <div *ngIf="status === 'connecting'" class="state-card">
         Connecting to {{ session?.formateur?.name }}...
@@ -81,6 +90,37 @@ import { AvatarProvider } from '../../core/models/formateur.model';
 
     <!-- RIGHT SIDE -->
     <div class="info-panel" *ngIf="session">
+      
+<div class="info-card" *ngIf="session?.userSessions?.length">
+
+  <h3>Your Progress</h3>
+
+  <div class="info-row">
+    <span>Registration Date</span>
+    <strong>
+      {{ session.userSessions[0].registrationDate | date:'medium' }}
+    </strong>
+  </div>
+
+  <div class="info-row">
+    <span>Status</span>
+
+    <strong
+      [style.color]="session.userSessions[0].isCompleted ? '#10b981' : '#f59e0b'"
+    >
+      {{ session.userSessions[0].isCompleted ? 'Completed' : 'In Progress' }}
+    </strong>
+  </div>
+
+  <button
+    class="complete-btn"
+    *ngIf="!session.userSessions[0].isCompleted"
+    (click)="markCompleted()"
+  >
+    Mark as Completed
+  </button>
+
+</div>
 
       <div class="info-card">
         <h3>Formation</h3>
@@ -166,9 +206,11 @@ export class LiveCallComponent implements OnInit, OnDestroy {
   @ViewChild('callContainer', { static: true }) containerRef!: ElementRef<HTMLElement>;
 
   session: Session | null = null;
-  status: 'loading' | 'connecting' | 'connected' | 'error' = 'loading';
+  status: 'loading' | 'connecting' | 'connected' | 'error' | 'sesionloaded' = 'loading';
   errorMessage = '';
   textInput = '';
+
+  sessionId: number | null = null;
 
 
   private provider: IAvatarProvider | null = null;
@@ -176,16 +218,19 @@ export class LiveCallComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private sessionService: SessionService,
+    private userSessionService: UserSessionService,
+
     private avatarFactory: AvatarProviderFactory
   ) { }
 
   ngOnInit(): void {
-    const sessionId = Number(this.route.snapshot.paramMap.get('id'));
+    this.sessionId = Number(this.route.snapshot.paramMap.get('id'));
 
-    this.sessionService.getWithFormateur(sessionId).subscribe({
+    this.sessionService.getWithFormateur(this.sessionId).subscribe({
       next: async (session) => {
         this.session = session;
-        await this.startCall(session);
+        this.status = (this.session.avatarSessionResponse?.clientToken || this.session.avatarSessionResponse?.joinUrl) ? 'sesionloaded' : 'error'
+        //await this.startCall(session);
       },
       error: (err) => {
         this.status = 'error';
@@ -218,7 +263,6 @@ export class LiveCallComponent implements OnInit, OnDestroy {
       this.errorMessage = (err as Error).message;
       return;
     }
-    console.log("main", session.avatarSessionResponse);
 
     await this.provider.connect(
       {
@@ -242,12 +286,40 @@ export class LiveCallComponent implements OnInit, OnDestroy {
       }
     );
   }
-
+  async startSession(): Promise<void> {
+    await this.startCall(this.session!);
+  }
   async endCall(): Promise<void> {
+
+    if (
+      this.session?.userSessions?.length &&
+      !this.session.userSessions[0].isCompleted
+    ) {
+      this.markCompleted();
+    }
+
     await this.provider?.disconnect();
   }
 
   ngOnDestroy(): void {
     this.provider?.disconnect();
+  }
+  markCompleted(): void {
+
+    if (!this.session) return;
+    if (this.sessionId == null) return;
+
+    this.userSessionService
+      .markCompleted(this.sessionId, { isCompleted: true, sessionId: this.sessionId })
+      .subscribe({
+        next: () => {
+          // if (this.session?.userSessions?.length) {
+          //   this.session.userSessions[0].isCompleted = true;
+          // }
+        },
+        error: (err) => {
+          console.error(err);
+        }
+      });
   }
 }

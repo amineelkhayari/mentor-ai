@@ -19,6 +19,12 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/formations/formation-list.component').then((m) => m.FormationListComponent),
   },
+   {
+    path: 'formations/:id/detail',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/formations/formation-detail.component').then((m) => m.FormationDetailComponent),
+  },
   {
     path: 'sessions',
     canActivate: [authGuard],

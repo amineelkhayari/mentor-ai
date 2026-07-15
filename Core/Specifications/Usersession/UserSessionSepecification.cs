@@ -1,4 +1,5 @@
 namespace Core.Specifications.Usersession;
+
 using Core.Entities;
 
 public class UserSessionSepecification : BaseSpecification<UserSession>
@@ -13,8 +14,8 @@ public class UserSessionSepecification : BaseSpecification<UserSession>
         AddInclude(x => x.User);
 
     }
-    public UserSessionSepecification(int userSessionId)
-        : base(x => x.Id == userSessionId)
+    public UserSessionSepecification(int sessionId, string userId)
+        : base(x => x.SessionId == sessionId && x.UserId == userId)
     {
         AddInclude(x => x.Session);
         AddInclude(x => x.User);

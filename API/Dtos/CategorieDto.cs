@@ -20,7 +20,7 @@ namespace API.Dtos;
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
     public string Description { get; set; } = string.Empty;
-        public ICollection<FormationDto> Formations { get; set; } = new List<FormationDto>();
+        public ICollection<CreateFormationDto> Formations { get; set; } = new List<CreateFormationDto>();
     }
 
     // Search / Filter DTO (Optional)

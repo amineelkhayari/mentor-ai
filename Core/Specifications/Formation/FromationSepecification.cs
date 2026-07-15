@@ -14,5 +14,6 @@ public class FormationSepecification : BaseSpecification<Formation>
         : base(x => x.Id == formationId)
     {
         AddInclude(x => x.Category);
+        AddInclude(x=> x.Sessions);
     }
 }

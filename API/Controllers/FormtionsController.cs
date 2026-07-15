@@ -32,7 +32,7 @@ public class FormationsController : ControllerBase
             .GetEntitiesAsync(spec)
             .ConfigureAwait(false);
 
-        return Ok(_mapper.Map<List<FormationDto>>(formations));
+        return Ok(_mapper.Map<List<CreateFormationDto>>(formations));
     }
 
     [HttpGet("{id:int}")]
@@ -56,7 +56,7 @@ public class FormationsController : ControllerBase
 
     [HttpPost]
     [Authorize(policy: "RequireAdminRole")]
-    public async Task<IActionResult> Create(FormationDto dto)
+    public async Task<IActionResult> Create(CreateFormationDto dto)
     {
         var exists = await _uow
             .Repository<Formation>()
@@ -86,7 +86,7 @@ public class FormationsController : ControllerBase
 
     [HttpPut("{id:int}")]
     [Authorize(policy: "RequireAdminRole")]
-    public async Task<IActionResult> Update(int id, FormationDto dto)
+    public async Task<IActionResult> Update(int id, CreateFormationDto dto)
     {
         var formation = await _uow
             .Repository<Formation>()

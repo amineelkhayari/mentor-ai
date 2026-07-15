@@ -5,12 +5,13 @@ import { environment } from '../../../environments/environment';
 import { AppRole } from '../models/role.model';
 import { LoginDto, RegisterDto, AuthResponse, ChangePasswordDto } from '../models/auth-dtos.model';
 
-interface DecodedToken {
+export interface DecodedToken {
   sub?: string;
-  email?: string;
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'?: string;
   role?: AppRole | AppRole[];
   // ASP.NET Identity commonly emits the role under this full claim URI
   // instead of a short "role" claim — checked as a fallback below.
+  'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name':string;
   'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'?: AppRole | AppRole[];
   exp?: number;
 }
@@ -77,13 +78,15 @@ export class AuthService {
     return this.hasRole("admin");
   }
 
-  private decodeToken(): DecodedToken | null {
+  public decodeToken(): DecodedToken | null {
     const token = this.getToken();
     if (!token) return null;
 
     try {
       const payload = token.split('.')[1];
       const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+      console.log(json);
+      
       return JSON.parse(json);
     } catch {
       return null;

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { UserSessionService } from '../../core/services/user-session.service';
 import { UserSession } from '../../core/models/user-session.model';
-import { AvatarProvider } from '../../core/models/formateur.model';
 
 @Component({
   selector: 'app-my-sessions',
@@ -28,7 +27,7 @@ import { AvatarProvider } from '../../core/models/formateur.model';
 
       <div class="card-header">
         <h3>
-          {{ us.session?.title ?? ('Session #' + us.sessionId) }}
+          {{ "# "+us.sessionId+" "+us.sessionName }}
         </h3>
 
         <span

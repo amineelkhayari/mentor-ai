@@ -35,10 +35,10 @@ public class SessionsController(IUnitOfWork uow, IMapper mapper, IAvatarProvider
         var result = sessions.Select(s => new SessionDto
         {
             Id = s.Id,
-            Title = s.Name,
+            Name = s.Name,
             StartDate = s.StartDate,
             EndDate = s.EndDate,
-            Formation = _mapper.Map<FormationDto>(s.Formation),
+            Formation = _mapper.Map<CreateFormationDto>(s.Formation),
             Formateur = _mapper.Map<FormateurDto>(s.Formateur),
             UserSessions = _mapper.Map<List<UserSessionDto>>(s.UserSessions)
         });
@@ -60,7 +60,7 @@ public class SessionsController(IUnitOfWork uow, IMapper mapper, IAvatarProvider
         var result = sessions.Select(s => new SessionDto
         {
             Id = s.Id,
-            Title = s.Name,
+            Name = s.Name,
             StartDate = s.StartDate,
             EndDate = s.EndDate,
             FormationId = s.FormationId,
@@ -108,14 +108,14 @@ public class SessionsController(IUnitOfWork uow, IMapper mapper, IAvatarProvider
         prompt.AppendLine();
 
         prompt.AppendLine("## Formation Information");
-        prompt.AppendLine($"Formation Title: {sessions?.Formation.Title}");
+        prompt.AppendLine($"Formation Name: {sessions?.Formation.Title}");
         prompt.AppendLine($"Formation Description: {sessions.Formation.Description}");
         prompt.AppendLine($"Category: {sessions.Formation.CategoryId}");
         prompt.AppendLine($"Duration: {sessions.Formation.DurationHours} hours");
         prompt.AppendLine();
 
         prompt.AppendLine("## Current Session");
-        prompt.AppendLine($"Session Name: {sessions.Title}");
+        prompt.AppendLine($"Session Name: {sessions.Name}");
         prompt.AppendLine($"Starts: {sessions.StartDate:yyyy-MM-dd HH:mm}");
         prompt.AppendLine($"Ends: {sessions.EndDate:yyyy-MM-dd HH:mm}");
         prompt.AppendLine();
@@ -159,7 +159,7 @@ public class SessionsController(IUnitOfWork uow, IMapper mapper, IAvatarProvider
     {
         var session = new Session
         {
-            Name = dto.Title,
+            Name = dto.Name,
             StartDate = dto.StartDate,
             EndDate = dto.EndDate,
             FormationId = dto.FormationId,
@@ -169,7 +169,7 @@ public class SessionsController(IUnitOfWork uow, IMapper mapper, IAvatarProvider
         _uow.Repository<Session>().Add(session);
         await _uow.Complete().ConfigureAwait(false);
 
-        return Ok(session);
+        return NoContent();
     }
 
     // PUT: api/sessions/{id}
@@ -186,7 +186,7 @@ public class SessionsController(IUnitOfWork uow, IMapper mapper, IAvatarProvider
             return NotFound();
         }
 
-        session.Name = dto.Title;
+        session.Name = dto.Name;
         session.StartDate = dto.StartDate;
         session.EndDate = dto.EndDate;
         session.FormationId = dto.FormationId;

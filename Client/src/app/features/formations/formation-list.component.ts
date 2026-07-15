@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormationService } from '../../core/services/formation.service';
 import { Formation } from '../../core/models/formation.model';
 
@@ -15,14 +15,26 @@ import { Formation } from '../../core/models/formation.model';
       <h1>Formations</h1>
       <p>Browse available training programs and courses.</p>
     </div>
+    <div class="categories-bar" *ngIf="categories.length">
+
+  <button
+    *ngFor="let category of categories"
+    class="category-chip"
+    [class.active]="selectedCategory === category"
+    (click)="filterByCategory(category)"
+  >
+    {{ category }}
+  </button>
+
+</div>
 
     <div class="stats-badge">
       {{ formations.length }} Formation{{ formations.length !== 1 ? 's' : '' }}
     </div>
   </div>
 
-  <div *ngIf="formations.length; else emptyState" class="formations-grid">
-    <div class="formation-card" *ngFor="let f of formations">
+  <div *ngIf="filteredFormations.length; else emptyState" class="formations-grid">
+    <div class="formation-card" *ngFor="let f of filteredFormations">
       <div class="card-header">
         <h3>{{ f.title }}</h3>
 
@@ -40,7 +52,7 @@ import { Formation } from '../../core/models/formation.model';
       </p>
 
       <div class="card-footer">
-        <button class="details-btn">
+        <button class="details-btn" (click)="launch(f.id)">
           View Details
         </button>
       </div>
@@ -60,11 +72,43 @@ import { Formation } from '../../core/models/formation.model';
 })
 export class FormationListComponent implements OnInit {
   formations: Formation[] = [];
+  filteredFormations: Formation[] = [];
 
-  constructor(private formationService: FormationService) { }
+  categories: string[] = [];
+  selectedCategory = 'All';
+
+  constructor(private formationService: FormationService, private router: Router) { }
 
   ngOnInit(): void {
-    this.formationService.getAll().subscribe((data) => (this.formations = data));
+    this.formationService.getAll().subscribe((data) => {
+      this.formations = data;
+      this.filteredFormations = data;
 
+      this.categories = [
+        'All',
+        ...new Set(
+          data
+            .map(x => x.categoryName)
+            .filter(Boolean)
+        )
+      ];
+    });
+  }
+
+  filterByCategory(category: string): void {
+    this.selectedCategory = category;
+
+    if (category === 'All') {
+      this.filteredFormations = this.formations;
+      return;
+    }
+
+    this.filteredFormations = this.formations.filter(
+      x => (x.categoryName) === category
+    );
+  }
+
+  launch(id: number): void {
+    this.router.navigate(['/formations', id, 'detail']);
   }
 }

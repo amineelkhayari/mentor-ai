@@ -39,7 +39,7 @@ import { Formateur } from '../../core/models/formateur.model';
       <div class="field">
         <label>Session Title</label>
         <input
-          formControlName="title"
+          formControlName="name"
           placeholder="e.g. Subnetting Workshop"
         />
       </div>
@@ -98,7 +98,7 @@ import { Formateur } from '../../core/models/formateur.model';
 
       <div class="card-header">
 
-        <h3>{{ s.title }}</h3>
+        <h3>{{ s.name }}</h3>
 
         <span class="count-badge">
           Live
@@ -171,7 +171,7 @@ export class SessionManageComponent implements OnInit {
 
 
   form = this.fb.group({
-    title: ['', Validators.required],
+    name: ['', Validators.required],
     formationId: [null as number | null, Validators.required],
     formateurId: [null as number | null, Validators.required],
     startDate: ['', Validators.required],
@@ -221,7 +221,7 @@ export class SessionManageComponent implements OnInit {
   }
 
   remove(s: Session): void {
-    if (!confirm(`Delete session "${s.title}"?`)) return;
+    if (!confirm(`Delete session "${s.name}"?`)) return;
     this.sessionService.delete(s.id).subscribe(() => this.load());
   }
 }

@@ -43,7 +43,7 @@ public class UserSessionsController : ControllerBase
             .GetEntitiesAsync(spec)
             .ConfigureAwait(false);
 
-        return Ok(_mapper.Map<List<UserSessionDto>>(sessions));
+        return Ok(_mapper.Map<List<UserSessionDetailDto>>(sessions));
     }
 
     // GET: api/sessions/{id}
@@ -51,7 +51,19 @@ public class UserSessionsController : ControllerBase
     [Authorize(policy: "RequireBasicAdminRole")]
     public async Task<IActionResult> GetById(int id)
     {
-        var spec = new UserSessionSepecification(id);
+
+        ClaimsPrincipal? user = HttpContext.User;
+        var userId = string.Empty;
+        if (user.FindFirst(ClaimTypes.NameIdentifier)!.Value != null)
+        {
+            userId = user.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        }
+        else
+        {
+            return Unauthorized();
+        }
+
+        var spec = new UserSessionSepecification(id, userId);
         var session = await _uow
             .Repository<UserSession>()
             .GetEntityAsync(spec)
@@ -91,9 +103,22 @@ public class UserSessionsController : ControllerBase
     [Authorize(policy: "RequireBasicAdminRole")]
     public async Task<IActionResult> Update(int id, UpdateUserSessionDto dto)
     {
+        ClaimsPrincipal? user = HttpContext.User;
+        var userId = string.Empty;
+        if (user.FindFirst(ClaimTypes.NameIdentifier)!.Value != null)
+        {
+            userId = user.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+        }
+        else
+        {
+            return Unauthorized();
+        }
+
+        var spec = new UserSessionSepecification(id, userId);
         var session = await _uow
             .Repository<UserSession>()
-            .GetByIdAsync(id).ConfigureAwait(false);
+            .GetEntityAsync(spec)
+            .ConfigureAwait(false);
 
         if (session == null)
         {
@@ -101,7 +126,6 @@ public class UserSessionsController : ControllerBase
         }
 
         session.IsCompleted = dto.IsCompleted;
-        // session.RegistrationDate = dto.RegistrationDate;
         session.SessionId = dto.SessionId;
 
         _uow.Repository<UserSession>().Update(session);

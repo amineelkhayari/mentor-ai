@@ -26,7 +26,7 @@ import { Session } from '../../core/models/session.model';
     <div class="session-card" *ngFor="let s of sessions">
 
       <div class="card-header">
-        <h3>{{ s.title }}</h3>
+        <h3>{{ s.name }}</h3>
 
         <span
           class="status-badge"
