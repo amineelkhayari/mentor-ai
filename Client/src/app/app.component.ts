@@ -110,8 +110,10 @@ export class AppComponent {
   showNav = true;
   infoUser:DecodedToken | null = null;
   constructor(public auth: AuthService, private router: Router) {
-    this.infoUser = this.auth.decodeToken();
-    console.log(this.infoUser,"hhhhhhhh");
+     router.events.subscribe(() => {
+        this.infoUser = this.auth.decodeToken();
+
+  });
     
     this.router.events
       .pipe(filter((e): e is NavigationEnd => e instanceof NavigationEnd))

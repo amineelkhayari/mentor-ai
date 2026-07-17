@@ -17,13 +17,60 @@ import { Session } from '../../core/models/session.model';
       <p>Join live sessions and interact with your AI trainer.</p>
     </div>
 
+<div class="categories-bar" *ngIf="filteredSessions.length">
+
+  <button
+    
+    class="category-chip"
+    
+           [class.active]="selectFilter === 'All'"
+       (click)="filterBySession('All')"
+
+  >
+    All
+  </button>
+   <button
+    class="category-chip"
+    [class.active]="selectFilter === 'Upcoming'"
+    (click)="filterBySession('Upcoming')"
+  >
+    Upcoming
+  </button>
+  <button
+    
+    class="category-chip"
+        [class.active]="selectFilter === 'Passed'"
+
+       (click)="filterBySession('Passed')"
+
+  >
+    Passed
+  </button>
+
+  <button
+    class="category-chip"
+    [class.active]="selectFilter === 'Available'"
+       (click)="filterBySession('Available')"
+
+  >
+    Available
+  </button>
+ <button
+    class="category-chip"
+    [class.active]="selectFilter === 'Joined'"
+       (click)="filterBySession('Joined')"
+
+  >
+    Joined
+  </button>
+</div>
     <div class="stats-badge">
-      {{ sessions.length }} Session{{ sessions.length !== 1 ? 's' : '' }}
+      {{ filteredSessions.length }} Session{{ filteredSessions.length !== 1 ? 's' : '' }}
     </div>
   </div>
 
-  <div *ngIf="sessions.length; else emptyState" class="sessions-grid">
-    <div class="session-card" *ngFor="let s of sessions">
+  <div *ngIf="filteredSessions.length; else emptyState" class="sessions-grid">
+    <div class="session-card" *ngFor="let s of filteredSessions">
 
       <div class="card-header">
         <h3>{{ s.name }}</h3>
@@ -74,26 +121,52 @@ import { Session } from '../../core/models/session.model';
   </ng-template>
 </div>
   `,
-    styleUrl: './session.css',
+  styleUrl: './session.css',
 
 })
 export class SessionListComponent implements OnInit {
   sessions: Session[] = [];
+  filteredSessions: Session[] = [];
+
+  selectFilter: 'All' | 'Passed' | 'Upcoming' | 'Joined' | 'Available' = 'All';
 
   constructor(
     private sessionService: SessionService,
     private userSessionService: UserSessionService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.sessionService.getAll().subscribe((res) => (this.sessions = res));
+    this.sessionService.getAll().subscribe((res) => { this.sessions = res; this.filteredSessions = res });
   }
 
   join(session: Session): void {
     this.userSessionService.register(session.id).subscribe({
       next: () => this.router.navigate(['/sessions', session.id, 'call']),
       error: () => this.router.navigate(['/sessions', session.id, 'call']), // e.g. already registered
+    });
+  }
+
+
+  filterBySession(statusSession: 'All' | 'Passed' | 'Upcoming' | 'Joined' | 'Available'): void {
+    const today = new Date();
+    this.selectFilter = statusSession;
+    console.log(this.selectFilter);
+
+    this.filteredSessions = this.sessions.filter(f => {
+      switch (this.selectFilter) {
+        case 'Passed':
+          return new Date(f.endDate) < today;
+
+        case 'Upcoming':
+          return new Date(f.endDate) >= today;
+        case 'Joined':
+          return f.sessionJoined == 'Joined';
+        case 'Available':
+          return f.sessionJoined == 'Join';
+        default: // All
+          return true;
+      }
     });
   }
 }

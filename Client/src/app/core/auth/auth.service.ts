@@ -30,6 +30,12 @@ export class AuthService {
       .pipe(tap((res) => res?.token && localStorage.setItem(TOKEN_KEY, res.token)));
   }
 
+getAllUsers(): Observable<any> {
+    return this.http
+      .get<any>(`${environment.apiBaseUrl}/Admin/users`)
+      
+  }
+  
   /**
    * POST /api/Account/register — RegisterDto only has displayName, email,
    * userName (no password field in the spec). See auth-dtos.model.ts for

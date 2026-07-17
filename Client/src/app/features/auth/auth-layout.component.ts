@@ -22,7 +22,7 @@ import { RouterLink } from '@angular/router';
     <div class="auth-shell">
       <aside class="auth-side" [class.side-teal]="variant === 'signup'">
         <div class="side-top">
-          <span class="mark">◎ Study<span class="mark-accent">Session</span></span>
+          <span class="mark">◎ Mentor<span class="mark-accent">Ai</span></span>
         </div>
 
         <div class="side-mid">

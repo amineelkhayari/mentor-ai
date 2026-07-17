@@ -1,4 +1,4 @@
-import { Component, inject, Inject } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -36,7 +36,7 @@ import { AuthService } from '../../core/auth/auth.service';
         </div>
 
         <div class="field">
-          <label for="password">Password</label>
+          <label for="password">Password (always password is : Pa$$w0rd)</label>
           <input
             id="password"
             type="password"
@@ -52,28 +52,52 @@ import { AuthService } from '../../core/auth/auth.service';
         </button>
       </form>
 
+       <div class="field">
+    <label>Account</label>
+    <select (change)="selectAccount($event)">
+      <option>Select an Account</option>
+      <option *ngFor="let x of accounts" [value]="x?.userName">{{ x?.fullName }}</option>
+      
+    </select>
+  </div>
+
       <p class="form-footer">New here? <a routerLink="/register">Create an account</a></p>
     </app-auth-layout>
   `,
   styleUrl: './auth-form.css',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   submitting = false;
   serverError = '';
   private fb = inject(FormBuilder);
+  accounts: any = {};
 
   form = this.fb.group({
     userName: ['', [Validators.required]],
     password: ['Pa$$w0rd', [Validators.required]],
   });
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(private auth: AuthService, private router: Router) { }
+  ngOnInit(): void {
+
+    this.auth.getAllUsers().subscribe((src: any) => {
+      this.accounts = src;
+
+    });
+  }
 
   isInvalid(field: string): boolean {
     const c = this.form.get(field);
     return !!c && c.invalid && (c.dirty || c.touched);
   }
+  selectAccount(event: Event): void {
+    const value = (event.target as HTMLSelectElement).value;
 
+
+    this.form.patchValue({
+      userName: value ?? ''
+    });
+  }
   submit(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -85,7 +109,11 @@ export class LoginComponent {
     const { userName, password } = this.form.getRawValue();
 
     this.auth.login(userName!, password!).subscribe({
-      next: () => this.router.navigate(['/sessions']),
+      next: () => {
+        
+        console.log('Token:', this.auth.getToken());
+  console.log('Decoded:', this.auth.decodeToken());
+        this.router.navigate(['/sessions'])},
       error: (err) => {
         this.submitting = false;
         this.serverError = err?.error?.message ?? 'Incorrect username or password. Please try again.';

@@ -1,5 +1,5 @@
 # MentorAI Project - Structure & Objectives
-
+-- docker run --env-file .env.production -p 8080:8080 mentor-ai-test
 ## 📋 Project Overview
 
 **MentorAI** is a comprehensive **Learning Management System (LMS)** designed to manage educational content, training sessions, and user interactions. The project follows a **multi-tier architecture** with a **backend API** (ASP.NET Core), a **frontend web application** (Angular), and supporting infrastructure components.
