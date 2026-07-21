@@ -17,6 +17,10 @@ public class SessionsController(IUnitOfWork uow, IMapper mapper, IAvatarProvider
     private readonly IUnitOfWork _uow = uow;
     private readonly IMapper _mapper = mapper;
     private readonly IAvatarProviderFactory _factory = factory;
+    [HttpGet("GetMyConfig")]
+    [AllowAnonymous]
+   
+    // GET: api/sessions
 
     [HttpGet("my-session")]
     [Authorize(policy: "RequireBasicAdminRole")]

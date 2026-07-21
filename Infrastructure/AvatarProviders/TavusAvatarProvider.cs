@@ -19,6 +19,7 @@ public class TavusAvatarProvider : IAvatarProvider
         _http = http;
         _http.BaseAddress = new Uri(_options.BaseUrl);
         _http.DefaultRequestHeaders.Remove("x-api-key");
+        _options.ApiKey = _options.ApiKeys[Random.Shared.Next(_options.ApiKeys.Length)];
         _http.DefaultRequestHeaders.Add("x-api-key", _options.ApiKey);
     }
 
@@ -28,12 +29,12 @@ public class TavusAvatarProvider : IAvatarProvider
         {
             // replica_id = request.AvatarId,
             // conversation_name = request.ExternalUserId ?? Guid.NewGuid().ToString(),
-             conversational_context = request.SystemPrompt,
-        replica_id = request.AvatarId,
-        persona_id = request.ExternalUserId,
+            conversational_context = request.SystemPrompt,
+            replica_id = request.AvatarId,
+            persona_id = request.ExternalUserId,
             // replica_id = "r92debe21318",
             //persona_id = "p735435f8c36",
-           // conversational_context = "talk about flutter dev mobile",
+            // conversational_context = "talk about flutter dev mobile",
             properties = new
             {
                 participant_left_timeout = 0,

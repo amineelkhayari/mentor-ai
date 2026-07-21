@@ -19,6 +19,8 @@ public class AnamAvatarProvider : IAvatarProvider
         _options = options.Value;
         _http = http;
         _http.BaseAddress = new Uri(_options.BaseUrl);
+      _options.ApiKey = _options.ApiKeys[Random.Shared.Next(_options.ApiKeys.Length)];
+
         _http.DefaultRequestHeaders.Authorization =
             new AuthenticationHeaderValue("Bearer", _options.ApiKey);
     }
